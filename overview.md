@@ -56,15 +56,191 @@ replicaset.apps/mywebserver-5cb858fd59   1         1         0       11s
 {% endtab %}
 {% endtabs %}
 
-Get all resources
 
+
+
+
+
+
+{% tabs %}
+{% tab title="Command" %}
 ```text
-
+kubectl describe deployment mywebserver
 ```
+{% endtab %}
+{% endtabs %}
 
+{% tabs %}
+{% tab title="Sample Output" %}
 ```text
-
+Name:                   mywebserver
+Namespace:              default
+CreationTimestamp:      Thu, 08 Apr 2021 12:29:27 +0000
+Labels:                 app=mywebserver
+Annotations:            deployment.kubernetes.io/revision: 1
+Selector:               app=mywebserver
+Replicas:               1 desired | 1 updated | 1 total | 1 available | 0 unavailable
+StrategyType:           RollingUpdate
+MinReadySeconds:        0
+RollingUpdateStrategy:  25% max unavailable, 25% max surge
+Pod Template:
+  Labels:  app=mywebserver
+  Containers:
+   nginx:
+    Image:        nginx:latest
+    Port:         <none>
+    Host Port:    <none>
+    Environment:  <none>
+    Mounts:       <none>
+  Volumes:        <none>
+Conditions:
+  Type           Status  Reason
+  ----           ------  ------
+  Available      True    MinimumReplicasAvailable
+  Progressing    True    NewReplicaSetAvailable
+OldReplicaSets:  <none>
+NewReplicaSet:   mywebserver-5cb858fd59 (1/1 replicas created)
+Events:
+  Type    Reason             Age    From                   Message
+  ----    ------             ----   ----                   -------
+  Normal  ScalingReplicaSet  3m25s  deployment-controller  Scaled up replica set mywebserver-5cb858fd59 to 1
 ```
+{% endtab %}
+{% endtabs %}
+
+
+
+
+
+
+
+
+
+{% tabs %}
+{% tab title="Command" %}
+```text
+kubectl get all 
+```
+{% endtab %}
+{% endtabs %}
+
+{% tabs %}
+{% tab title="Sample Output" %}
+```text
+NAME                               READY   STATUS              RESTARTS   AGE
+pod/mywebserver-5cb858fd59-mjh72   0/1     ContainerCreating   0          11s
+
+NAME                 TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)   AGE
+service/kubernetes   ClusterIP   10.96.0.1    <none>        443/TCP   9m22s
+
+NAME                          READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/mywebserver   0/1     1            0           11s
+
+NAME                                     DESIRED   CURRENT   READY   AGE
+replicaset.apps/mywebserver-5cb858fd59   1         1         0       11s
+```
+{% endtab %}
+{% endtabs %}
+
+
+
+
+
+{% tabs %}
+{% tab title="Command" %}
+```text
+kubectl get all 
+```
+{% endtab %}
+{% endtabs %}
+
+{% tabs %}
+{% tab title="Sample Output" %}
+```text
+NAME                               READY   STATUS              RESTARTS   AGE
+pod/mywebserver-5cb858fd59-mjh72   0/1     ContainerCreating   0          11s
+
+NAME                 TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)   AGE
+service/kubernetes   ClusterIP   10.96.0.1    <none>        443/TCP   9m22s
+
+NAME                          READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/mywebserver   0/1     1            0           11s
+
+NAME                                     DESIRED   CURRENT   READY   AGE
+replicaset.apps/mywebserver-5cb858fd59   1         1         0       11s
+```
+{% endtab %}
+{% endtabs %}
+
+
+
+
+
+
+
+{% tabs %}
+{% tab title="Command" %}
+```text
+kubectl get all 
+```
+{% endtab %}
+{% endtabs %}
+
+{% tabs %}
+{% tab title="Sample Output" %}
+```text
+NAME                               READY   STATUS              RESTARTS   AGE
+pod/mywebserver-5cb858fd59-mjh72   0/1     ContainerCreating   0          11s
+
+NAME                 TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)   AGE
+service/kubernetes   ClusterIP   10.96.0.1    <none>        443/TCP   9m22s
+
+NAME                          READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/mywebserver   0/1     1            0           11s
+
+NAME                                     DESIRED   CURRENT   READY   AGE
+replicaset.apps/mywebserver-5cb858fd59   1         1         0       11s
+```
+{% endtab %}
+{% endtabs %}
+
+
+
+
+
+{% tabs %}
+{% tab title="Command" %}
+```text
+kubectl get all 
+```
+{% endtab %}
+{% endtabs %}
+
+{% tabs %}
+{% tab title="Sample Output" %}
+```text
+NAME                               READY   STATUS              RESTARTS   AGE
+pod/mywebserver-5cb858fd59-mjh72   0/1     ContainerCreating   0          11s
+
+NAME                 TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)   AGE
+service/kubernetes   ClusterIP   10.96.0.1    <none>        443/TCP   9m22s
+
+NAME                          READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/mywebserver   0/1     1            0           11s
+
+NAME                                     DESIRED   CURRENT   READY   AGE
+replicaset.apps/mywebserver-5cb858fd59   1         1         0       11s
+```
+{% endtab %}
+{% endtabs %}
+
+
+
+
+
+
+
+
 
 controlplane $ kubectl create deployment mywebserver --image=nginx:latest deployment.apps/mywebserver created 
 
