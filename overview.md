@@ -37,16 +37,12 @@ controlplane   Ready    master   22m   v1.18.0   172.17.0.54   <none>        Ubu
 node01         Ready    <none>   22m   v1.18.0   172.17.0.60   <none>        Ubuntu 18.04.5 LTS   4.15.0-122-generic   docker://19.3.13
 ```
 
- 
-
-
-
 Create a deployment named `mywebserver` with the `nginx`image.
 
 {% tabs %}
 {% tab title="Command" %}
-```text
- kubectl create deployment mywebserver --image=nginx:latest 
+```bash
+ kubectl create deployment mywebserver --image=nginx:latest
 ```
 {% endtab %}
 {% endtabs %}
@@ -54,7 +50,8 @@ Create a deployment named `mywebserver` with the `nginx`image.
 {% tabs %}
 {% tab title="Sample Output" %}
 ```text
-deployment.apps/mywebserver created 
+controlplane $ kubectl create deployment mywebserver --image=nginx:latest 
+deployment.apps/mywebserver created
 ```
 {% endtab %}
 {% endtabs %}
@@ -87,7 +84,7 @@ replicaset.apps/mywebserver-5cb858fd59   1         1         0       11s
 {% endtab %}
 {% endtabs %}
 
-Describe the `mywebserver` deployment.
+Describe the `mywebserver`deployment.
 
 ```text
 kubectl describe deployment mywebserver
@@ -133,10 +130,12 @@ Events:
 
 Create a Service object that exposes the deployment:
 
+kubectl expose deployment mywebserver --name=my-service --type=NodePort --node-port=30000 --port=10080 --target-port=80
+
 {% tabs %}
 {% tab title="Command" %}
 ```text
-kubectl expose deployment mywebserver --type=NodePort --name=my-service
+kubectl create service nodeport mywebserver --tcp 10080:80 --node-port=30000
 ```
 {% endtab %}
 {% endtabs %}
@@ -144,18 +143,18 @@ kubectl expose deployment mywebserver --type=NodePort --name=my-service
 {% tabs %}
 {% tab title="Sample output" %}
 ```text
-service/my-service exposed
+controlplane $ kubectl create service nodeport mywebserver --tcp 10080:80 --node-port=30000
+service/mywebserver created
 ```
 {% endtab %}
 {% endtabs %}
 
-Check the created resource
+Check the created service.
 
 {% tabs %}
 {% tab title="Command" %}
 ```text
-kubectl get services -o wide
-
+kubectl get services 
 ```
 {% endtab %}
 {% endtabs %}
@@ -163,20 +162,37 @@ kubectl get services -o wide
 {% tabs %}
 {% tab title="Sample output" %}
 ```text
-controlplane $ kubectl get services -o wide
-NAME         TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)           AGE   SELECTOR
-kubernetes   ClusterIP   10.96.0.1       <none>        443/TCP           46m   <none>
-my-service   NodePort    10.97.207.253   <none>        10080:31956/TCP   42m   app=mywebserver
+controlplane $ kubectl get services 
+NAME          TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)           AGE
+kubernetes    ClusterIP   10.96.0.1       <none>        443/TCP           53m
+mywebserver   NodePort    10.98.254.151   <none>        10080:30000/TCP   11m
 ```
 {% endtab %}
 {% endtabs %}
+
+Check all the resources associated with the label `app=mywebserver`
+
+```text
+controlplane $ kubectl get all -o wide --selector=app=mywebserver
+NAME                               READY   STATUS    RESTARTS   AGE   IP           NODE     NOMINATED NODE   READINESS GATES
+pod/mywebserver-5cb858fd59-fs6dk   1/1     Running   0          33m   10.244.1.3   node01   <none>           <none>
+
+NAME                  TYPE       CLUSTER-IP      EXTERNAL-IP   PORT(S)           AGE     SELECTOR
+service/mywebserver   NodePort   10.98.254.151   <none>        10080:30000/TCP   9m46s   app=mywebserver
+
+NAME                          READY   UP-TO-DATE   AVAILABLE   AGE   CONTAINERS   IMAGES         SELECTOR
+deployment.apps/mywebserver   1/1     1            1           33m   nginx        nginx:latest   app=mywebserver
+
+NAME                                     DESIRED   CURRENT   READY   AGE   CONTAINERS   IMAGES         SELECTOR
+replicaset.apps/mywebserver-5cb858fd59   1         1         1       33m   nginx        nginx:latest   app=mywebserver,pod-template-hash=5cb858fd59
+```
 
 Connect to the web server through the created service.
 
 {% tabs %}
 {% tab title="Command" %}
 ```text
-curl localhost:31956
+curl localhost:30000
 ```
 {% endtab %}
 {% endtabs %}
@@ -217,7 +233,7 @@ Commercial support is available at
 We can also access the web-server through the hostname/IP address of the nodes \(the service will route the traffic to the appropriate node in the cluster\).
 
 ```text
-controlplane $ curl controlplane:31956
+controlplane $ curl controlplane:30000
 <!DOCTYPE html>
 <html>
 <head>
@@ -267,7 +283,7 @@ Commercial support is available at
 ```
 
 ```text
-controlplane $ curl node01:31956
+controlplane $ curl node01:30000
 <!DOCTYPE html>
 <html>
 <head>
@@ -296,7 +312,15 @@ Commercial support is available at
 controlplane $ 
 ```
 
-Use the `kubectl get pod` command  with the option `-o wide`to list more information, including the node the pod resides on, and the pod’s cluster IP.
+
+
+We may scale the replicaset by setting a new size for a Deployment.
+
+
+
+
+
+We may use the `kubectl get pod` command  with the option `-o wide`to list more information, including the node the pod resides on, and the pod’s cluster IP.
 
 ```text
 controlplane $ kubectl get pods -o wide 
