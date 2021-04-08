@@ -56,11 +56,7 @@ replicaset.apps/mywebserver-5cb858fd59   1         1         0       11s
 {% endtab %}
 {% endtabs %}
 
-
-
-
-
-
+Describe the `mywebserver` deployment
 
 {% tabs %}
 {% tab title="Command" %}
