@@ -316,9 +316,29 @@ controlplane $
 
 We may scale the replicaset by setting a new size for a Deployment.
 
+```text
+controlplane $ kubectl scale --replicas=3 deployment/mywebserver
+deployment.apps/mywebserver scaled
+```
 
+Check that 3 pods are created and in running state. The replicaset should indicate there are 3 instances of nginx running.
 
+```text
+controlplane $ kubectl get all -l app=mywebserver
+NAME                               READY   STATUS    RESTARTS   AGE
+pod/mywebserver-5cb858fd59-4gj8z   1/1     Running   0          3m13s
+pod/mywebserver-5cb858fd59-7zkp5   1/1     Running   0          3m13s
+pod/mywebserver-5cb858fd59-jpc9n   1/1     Running   0          5m26s
 
+NAME                  TYPE       CLUSTER-IP       EXTERNAL-IP   PORT(S)           AGE
+service/mywebserver   NodePort   10.108.217.244   <none>        10080:30000/TCP   4m45s
+
+NAME                          READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/mywebserver   3/3     3            3           5m26s
+
+NAME                                     DESIRED   CURRENT   READY   AGE
+replicaset.apps/mywebserver-5cb858fd59   3         3         3       5m26s
+```
 
 We may use the `kubectl get pod` command  with the option `-o wide`to list more information, including the node the pod resides on, and the pod’s cluster IP.
 
@@ -327,8 +347,6 @@ controlplane $ kubectl get pods -o wide
 NAME                           READY   STATUS    RESTARTS   AGE   IP           NODE     NOMINATED NODE   READINESS GATES
 mywebserver-5cb858fd59-phfgj   1/1     Running   0          29m   10.244.1.3   node01   <none>           <none>
 ```
-
-
 
 
 
