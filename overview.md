@@ -123,7 +123,7 @@ Check the created resource
 {% tabs %}
 {% tab title="Command" %}
 ```text
-controlplane $ kubectl get service
+kubectl get services -o wide
 
 ```
 {% endtab %}
@@ -132,9 +132,10 @@ controlplane $ kubectl get service
 {% tabs %}
 {% tab title="Sample output" %}
 ```text
-NAME         TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)           AGE
-kubernetes   ClusterIP   10.96.0.1       <none>        443/TCP           15m
-my-service   NodePort    10.97.207.253   <none>        10080:31956/TCP   11m
+controlplane $ kubectl get services -o wide
+NAME         TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)           AGE   SELECTOR
+kubernetes   ClusterIP   10.96.0.1       <none>        443/TCP           46m   <none>
+my-service   NodePort    10.97.207.253   <none>        10080:31956/TCP   42m   app=mywebserver
 ```
 {% endtab %}
 {% endtabs %}
@@ -144,8 +145,7 @@ Connect to the web server through the created service.
 {% tabs %}
 {% tab title="Command" %}
 ```text
-curl localhost:
-
+curl localhost:31956
 ```
 {% endtab %}
 {% endtabs %}
@@ -153,25 +153,177 @@ curl localhost:
 {% tabs %}
 {% tab title="Sample output" %}
 ```text
-NAME         TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)           AGE
-kubernetes   ClusterIP   10.96.0.1       <none>        443/TCP           15m
-my-service   NodePort    10.97.207.253   <none>        10080:31956/TCP   11m
+controlplane $ curl localhost:31956
+<!DOCTYPE html>
+<html>
+<head>
+<title>Welcome to nginx!</title>
+<style>
+    body {
+        width: 35em;
+        margin: 0 auto;
+        font-family: Tahoma, Verdana, Arial, sans-serif;
+    }
+</style>
+</head>
+<body>
+<h1>Welcome to nginx!</h1>
+<p>If you see this page, the nginx web server is successfully installed and
+working. Further configuration is required.</p>
+
+<p>For online documentation and support please refer to
+<a href="http://nginx.org/">nginx.org</a>.<br/>
+Commercial support is available at
+<a href="http://nginx.com/">nginx.com</a>.</p>
+
+<p><em>Thank you for using nginx.</em></p>
+</body>
+</html>
 ```
 {% endtab %}
 {% endtabs %}
 
-Connect to the web server through the created service.
-
-
+We can also access the web-server through the hostname/IP address of the nodes \(the service will route the traffic to the appropriate node in the cluster\).
 
 ```text
-controlplane $ kubectl get nodes -o wide 
+controlplane $ curl controlplane:31956
+<!DOCTYPE html>
+<html>
+<head>
+<title>Welcome to nginx!</title>
+<style>
+    body {
+        width: 35em;
+        margin: 0 auto;
+        font-family: Tahoma, Verdana, Arial, sans-serif;
+    }
+</style>
+</head>
+<body>
+<h1>Welcome to nginx!</h1>
+<p>If you see this page, the nginx web server is successfully installed and
+working. Further configuration is required.</p>
+
+<p>For online documentation and support please refer to
+<a href="http://nginx.org/">nginx.org</a>.<br/>
+Commercial support is available at
+controlplane $ curl controlplane:31956
+<!DOCTYPE html>
+<html>
+<head>
+<title>Welcome to nginx!</title>
+<style>
+    body {
+        width: 35em;
+        margin: 0 auto;
+        font-family: Tahoma, Verdana, Arial, sans-serif;
+    }
+</style>
+</head>
+<body>
+<h1>Welcome to nginx!</h1>
+<p>If you see this page, the nginx web server is successfully installed and
+working. Further configuration is required.</p>
+
+<p>For online documentation and support please refer to
+<a href="http://nginx.org/">nginx.org</a>.<br/>
+Commercial support is available at
+<a href="http://nginx.com/">nginx.com</a>.</p>
+
+<p><em>Thank you for using nginx.</em></p>
+</body>
+</html>
+```
+
+```text
+controlplane $ curl node01:31956
+<!DOCTYPE html>
+<html>
+<head>
+<title>Welcome to nginx!</title>
+<style>
+    body {
+        width: 35em;
+        margin: 0 auto;
+        font-family: Tahoma, Verdana, Arial, sans-serif;
+    }
+</style>
+</head>
+<body>
+<h1>Welcome to nginx!</h1>
+<p>If you see this page, the nginx web server is successfully installed and
+working. Further configuration is required.</p>
+
+<p>For online documentation and support please refer to
+<a href="http://nginx.org/">nginx.org</a>.<br/>
+Commercial support is available at
+<a href="http://nginx.com/">nginx.com</a>.</p>
+
+<p><em>Thank you for using nginx.</em></p>
+</body>
+</html>
+controlplane $ 
+```
+
+Use the `kubectl get nodes` command  with the option `-o wide`to list more information about the node \(e.g. the IP address of the nodes in the cluster\) 
+
+```text
+$ kubectl get nodes -o wide 
 NAME           STATUS   ROLES    AGE   VERSION   INTERNAL-IP   EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION       CONTAINER-RUNTIME
 controlplane   Ready    master   22m   v1.18.0   172.17.0.54   <none>        Ubuntu 18.04.5 LTS   4.15.0-122-generic   docker://19.3.13
 node01         Ready    <none>   22m   v1.18.0   172.17.0.60   <none>        Ubuntu 18.04.5 LTS   4.15.0-122-generic   docker://19.3.13
 ```
 
+ Use the `kubectl get pod` command  with the option `-o wide`to list more information, including the node the pod resides on, and the pod’s cluster IP.
 
+```text
+controlplane $ kubectl get pods -o wide 
+NAME                           READY   STATUS    RESTARTS   AGE   IP           NODE     NOMINATED NODE   READINESS GATES
+mywebserver-5cb858fd59-phfgj   1/1     Running   0          29m   10.244.1.3   node01   <none>           <none>
+```
+
+
+
+
+
+We may select resources with the specified label\(s\) using the `-l` option.
+
+```text
+controlplane $ kubectl get all -l app=mywebserver -o wide
+NAME                               READY   STATUS    RESTARTS   AGE   IP           NODE     NOMINATED NODE   READINESS GATES
+pod/mywebserver-5cb858fd59-phfgj   1/1     Running   0          61m   10.244.1.3   node01   <none>           <none>
+
+NAME                 TYPE       CLUSTER-IP      EXTERNAL-IP   PORT(S)           AGE   SELECTOR
+service/my-service   NodePort   10.97.207.253   <none>        10080:31956/TCP   57m   app=mywebserver
+
+NAME                          READY   UP-TO-DATE   AVAILABLE   AGE   CONTAINERS   IMAGES         SELECTOR
+deployment.apps/mywebserver   1/1     1            1           61m   nginx        nginx:latest   app=mywebserver
+
+NAME                                     DESIRED   CURRENT   READY   AGE   CONTAINERS   IMAGES         SELECTOR
+replicaset.apps/mywebserver-5cb858fd59   1         1         1       61m   nginx        nginx:latest   app=mywebserver,pod-template-hash=5cb858fd59
+```
+
+
+
+
+
+
+
+```text
+controlplane $ kubectl get all -o wide
+NAME                               READY   STATUS    RESTARTS   AGE   IP           NODE     NOMINATED NODE   READINESS GATES
+pod/mywebserver-5cb858fd59-phfgj   1/1     Running   0          38m   10.244.1.3   node01   <none>           <none>
+
+NAME                 TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)           AGE   SELECTOR
+service/kubernetes   ClusterIP   10.96.0.1       <none>        443/TCP           38m   <none>
+service/my-service   NodePort    10.97.207.253   <none>        10080:31956/TCP   34m   app=mywebserver
+
+NAME                          READY   UP-TO-DATE   AVAILABLE   AGE   CONTAINERS   IMAGES         SELECTOR
+deployment.apps/mywebserver   1/1     1            1           38m   nginx        nginx:latest   app=mywebserver
+
+NAME                                     DESIRED   CURRENT   READY   AGE   CONTAINERS   IMAGES         SELECTOR
+replicaset.apps/mywebserver-5cb858fd59   1         1         1       38m   nginx        nginx:latest   app=mywebserver,pod-template-hash=5cb858fd59
+```
 
 
 
