@@ -241,9 +241,9 @@ spec:
   type: NodePort 
   ports: 
   - name: http
-    port: 80
+    port: 10080
     targetPort: 80
-    nodePort: 30001 
+    nodePort: 30000 
     protocol: TCP
   selector: #Label selector used to identify pods
     app: nginx
@@ -268,9 +268,34 @@ deployment.apps/nginx-deployment created
 
 
 
+View the deployed resources
 
+```text
+controlplane $ kubectl get all
+NAME                                    READY   STATUS    RESTARTS   AGE
+pod/nginx-deployment-78fd5888d7-psx9x   1/1     Running   0          7m57s
+pod/nginx-deployment-78fd5888d7-zksxl   1/1     Running   0          7m57s
 
-## 
+NAME                    TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)           AGE
+service/kubernetes      ClusterIP   10.96.0.1       <none>        443/TCP           4m16s
+service/nginx-service   NodePort    10.99.185.197   <none>        10080:30000/TCP   4m2s
+
+NAME                               READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/nginx-deployment   2/2     2            2           7m57s
+
+NAME                                          DESIRED   CURRENT   READY   AGE
+replicaset.apps/nginx-deployment-78fd5888d7   2         2         2       7m57s
+```
+
+## Connect to the webserver multiple times and verify that the request is load-balanced across multiple servers.
+
+```text
+controlplane $ curl localhost:30000
+nginx-deployment-78fd5888d7-zksxl
+controlplane $ curl localhost:30000
+nginx-deployment-78fd5888d7-psx9x
+controlplane $ curl localhost:30000
+```
 
 ## 
 
