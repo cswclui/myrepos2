@@ -4,13 +4,39 @@ Try the interactive exercise at: [https://www.katacoda.com/rwclui/scenarios/kube
 
 kubectl commands: [https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands](https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands)
 
+controlplane $ launch.sh 
+
+Waiting for Kubernetes to start... Kubernetes started
+
 
 
 Create a deployment named `mywebserver` with the `nginx`image.
 
+{% tabs %}
+{% tab title="Command" %}
 ```text
  kubectl create deployment mywebserver --image=nginx:latest 
 ```
+{% endtab %}
+{% endtabs %}
+
+{% tabs %}
+{% tab title="Sample Output" %}
+```text
+deployment.apps/mywebserver created 
+```
+{% endtab %}
+{% endtabs %}
+
+Get all resources
+
+{% tabs %}
+{% tab title="Command" %}
+```text
+kubectl get all 
+```
+{% endtab %}
+{% endtabs %}
 
 {% tabs %}
 {% tab title="Sample Output" %}
@@ -22,11 +48,21 @@ deployment.apps/mywebserver created
 
 
 
-controlplane $ launch.sh Waiting for Kubernetes to start... Kubernetes started
+Get all resources
+
+```text
+
+```
+
+```text
+
+```
 
 controlplane $ kubectl create deployment mywebserver --image=nginx:latest deployment.apps/mywebserver created 
 
-controlplane $ kubectl get all NAME READY STATUS RESTARTS AGE pod/mywebserver-5cb858fd59-mjh72 0/1 ContainerCreating 0 11s
+controlplane $ 
+
+NAME READY STATUS RESTARTS AGE pod/mywebserver-5cb858fd59-mjh72 0/1 ContainerCreating 0 11s
 
 NAME TYPE CLUSTER-IP EXTERNAL-IP PORT\(S\) AGE service/kubernetes ClusterIP 10.96.0.1  443/TCP 9m22s
 
