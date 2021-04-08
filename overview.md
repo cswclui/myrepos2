@@ -41,7 +41,17 @@ kubectl get all
 {% tabs %}
 {% tab title="Sample Output" %}
 ```text
-deployment.apps/mywebserver created 
+NAME                               READY   STATUS              RESTARTS   AGE
+pod/mywebserver-5cb858fd59-mjh72   0/1     ContainerCreating   0          11s
+
+NAME                 TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)   AGE
+service/kubernetes   ClusterIP   10.96.0.1    <none>        443/TCP   9m22s
+
+NAME                          READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/mywebserver   0/1     1            0           11s
+
+NAME                                     DESIRED   CURRENT   READY   AGE
+replicaset.apps/mywebserver-5cb858fd59   1         1         0       11s
 ```
 {% endtab %}
 {% endtabs %}
