@@ -4,6 +4,8 @@
 
 > kubectl commands: [https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands](https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands)
 
+## Exploring the environment
+
 Wait for Kubernetes cluster to be initialized.
 
 ```text
@@ -37,10 +39,13 @@ controlplane   Ready    master   22m   v1.18.0   172.17.0.54   <none>        Ubu
 node01         Ready    <none>   22m   v1.18.0   172.17.0.60   <none>        Ubuntu 18.04.5 LTS   4.15.0-122-generic   docker://19.3.13
 ```
 
+## Create Deployment
+
 Create a deployment named `mywebserver` with the `nginx`image.
 
 ```text
-kubectl create deployment mywebserver --image=nginxdemos/hello
+kubectl create deployment mywebserver --image=stenote/nginx-hostname
+
 ```
 
 Get all resources
@@ -173,6 +178,8 @@ Events:
   Normal  Created    4m16s      kubelet, node01    Created container hello
   Normal  Started    4m16s      kubelet, node01    Started container hello
 ```
+
+## Create a NodePort Service
 
 Create a NodePort Service object that exposes the deployment:
 
@@ -356,7 +363,13 @@ Commercial support is available at
 controlplane $ 
 ```
 
+## Scaling out 
+
 We may scale your replicaset by setting a new size for your Deployment or  ReplicatSet.
+
+```text
+kubectl scale --replicas=3 deployment/mywebserver
+```
 
 ```text
 controlplane $ kubectl scale --replicas=3 deployment/mywebserver
@@ -381,6 +394,23 @@ deployment.apps/mywebserver   3/3     3            3           5m26s
 NAME                                     DESIRED   CURRENT   READY   AGE
 replicaset.apps/mywebserver-5cb858fd59   3         3         3       5m26s
 ```
+
+The service will load balance the request across the multiple pods
+
+```text
+controlplane $ curl localhost:30000
+mywebserver-564ccd895-m4fzf
+controlplane $ curl localhost:30000
+mywebserver-564ccd895-m4fzf
+controlplane $ curl localhost:30000
+mywebserver-564ccd895-m4fzf
+controlplane $ curl localhost:30000
+mywebserver-564ccd895-7lxrh
+```
+
+
+
+## others
 
 
 
