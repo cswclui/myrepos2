@@ -56,8 +56,6 @@ replicaset.apps/mywebserver-5cb858fd59   1         1         0       11s
 {% endtab %}
 {% endtabs %}
 
-
-
 Get all resources
 
 ```text
