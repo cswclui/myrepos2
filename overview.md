@@ -141,12 +141,10 @@ my-service   NodePort    10.97.207.253   <none>        10080:31956/TCP   11m
 
 Connect to the web server through the created service.
 
-Check the created resource
-
 {% tabs %}
 {% tab title="Command" %}
 ```text
-controlplane $ kubectl get service
+curl localhost:
 
 ```
 {% endtab %}
@@ -166,7 +164,12 @@ Connect to the web server through the created service.
 
 
 
-
+```text
+controlplane $ kubectl get nodes -o wide 
+NAME           STATUS   ROLES    AGE   VERSION   INTERNAL-IP   EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION       CONTAINER-RUNTIME
+controlplane   Ready    master   22m   v1.18.0   172.17.0.54   <none>        Ubuntu 18.04.5 LTS   4.15.0-122-generic   docker://19.3.13
+node01         Ready    <none>   22m   v1.18.0   172.17.0.60   <none>        Ubuntu 18.04.5 LTS   4.15.0-122-generic   docker://19.3.13
+```
 
 
 
