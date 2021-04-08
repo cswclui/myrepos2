@@ -56,15 +56,11 @@ replicaset.apps/mywebserver-5cb858fd59   1         1         0       11s
 {% endtab %}
 {% endtabs %}
 
-Describe the `mywebserver` deployment
+Describe the `mywebserver` deployment.
 
-{% tabs %}
-{% tab title="Command" %}
 ```text
 kubectl describe deployment mywebserver
 ```
-{% endtab %}
-{% endtabs %}
 
 {% tabs %}
 {% tab title="Sample Output" %}
@@ -104,9 +100,108 @@ Events:
 {% endtab %}
 {% endtabs %}
 
+Create a Service object that exposes the deployment:
+
+{% tabs %}
+{% tab title="Command" %}
+```text
+kubectl expose deployment mywebserver --type=NodePort --name=my-service
+```
+{% endtab %}
+{% endtabs %}
+
+{% tabs %}
+{% tab title="Sample output" %}
+```text
+service/my-service exposed
+```
+{% endtab %}
+{% endtabs %}
+
+Check the created resource
+
+{% tabs %}
+{% tab title="Command" %}
+```text
+controlplane $ kubectl get service
+
+```
+{% endtab %}
+{% endtabs %}
+
+{% tabs %}
+{% tab title="Sample output" %}
+```text
+NAME         TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)           AGE
+kubernetes   ClusterIP   10.96.0.1       <none>        443/TCP           15m
+my-service   NodePort    10.97.207.253   <none>        10080:31956/TCP   11m
+```
+{% endtab %}
+{% endtabs %}
+
+Connect to the web server through the created service.
+
+Check the created resource
+
+{% tabs %}
+{% tab title="Command" %}
+```text
+controlplane $ kubectl get service
+
+```
+{% endtab %}
+{% endtabs %}
+
+{% tabs %}
+{% tab title="Sample output" %}
+```text
+NAME         TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)           AGE
+kubernetes   ClusterIP   10.96.0.1       <none>        443/TCP           15m
+my-service   NodePort    10.97.207.253   <none>        10080:31956/TCP   11m
+```
+{% endtab %}
+{% endtabs %}
+
+Connect to the web server through the created service.
 
 
 
+
+
+
+
+
+
+
+
+NAME TYPE CLUSTER-IP EXTERNAL-IP PORT\(S\) AGE service/kubernetes ClusterIP 10.96.0.1  443/TCP 4m19s service/my-service NodePort 10.97.207.253  10080:31956/TCP 20s
+
+NAME READY UP-TO-DATE AVAILABLE AGE deployment.apps/mywebserver 1/1 1 1 4m12s
+
+NAME DESIRED CURRENT READY AGE replicaset.apps/mywebserver-5cb858fd59 1 1 1 4m3s controlplane $ curl localhost:10080 curl: \(7\) Failed to connect to localhost port 10080: Connection refused controlplane $ curl localhost:31956 &lt;!DOCTYPE html&gt;
+
+Welcome to nginx!  
+    body {  
+        width: 35em;  
+        margin: 0 auto;  
+        font-family: Tahoma, Verdana, Arial, sans-serif;  
+    }  
+
+
+## Welcome to nginx!
+
+If you see this page, the nginx web server is successfully installed and working. Further configuration is required.
+
+For online documentation and support please refer to [nginx.org](http://nginx.org/).  
+ Commercial support is available at [nginx.com](http://nginx.com/).
+
+_Thank you for using nginx._
+
+\_\_
+
+\_\_
+
+\_\_
 
 
 
@@ -115,7 +210,7 @@ Events:
 {% tabs %}
 {% tab title="Command" %}
 ```text
-kubectl get all 
+kubectl describe pod myweb
 ```
 {% endtab %}
 {% endtabs %}
@@ -123,17 +218,59 @@ kubectl get all
 {% tabs %}
 {% tab title="Sample Output" %}
 ```text
-NAME                               READY   STATUS              RESTARTS   AGE
-pod/mywebserver-5cb858fd59-mjh72   0/1     ContainerCreating   0          11s
-
-NAME                 TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)   AGE
-service/kubernetes   ClusterIP   10.96.0.1    <none>        443/TCP   9m22s
-
-NAME                          READY   UP-TO-DATE   AVAILABLE   AGE
-deployment.apps/mywebserver   0/1     1            0           11s
-
-NAME                                     DESIRED   CURRENT   READY   AGE
-replicaset.apps/mywebserver-5cb858fd59   1         1         0       11s
+controlplane $ 
+error: the server doesn't have a resource type "myweb"
+controlplane $ kubectl describe pod myweb
+Name:         mywebserver-5cb858fd59-mjh72
+Namespace:    default
+Priority:     0
+Node:         node01/172.17.0.12
+Start Time:   Thu, 08 Apr 2021 12:29:27 +0000
+Labels:       app=mywebserver
+              pod-template-hash=5cb858fd59
+Annotations:  <none>
+Status:       Running
+IP:           10.244.1.3
+IPs:
+  IP:           10.244.1.3
+Controlled By:  ReplicaSet/mywebserver-5cb858fd59
+Containers:
+  nginx:
+    Container ID:   docker://8e3aaa61e71481f455ba8e65a9e12aa9c6b8ddab8af89b95eeb336d6f3eb6818
+    Image:          nginx:latest
+    Image ID:       docker-pullable://nginx@sha256:bae781e7f518e0fb02245140c97e6ddc9f5fcf6aecc043dd9d17e33aec81c832
+    Port:           <none>
+    Host Port:      <none>
+    State:          Running
+      Started:      Thu, 08 Apr 2021 12:29:37 +0000
+    Ready:          True
+    Restart Count:  0
+    Environment:    <none>
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from default-token-z6sg9 (ro)
+Conditions:
+  Type              Status
+  Initialized       True 
+  Ready             True 
+  ContainersReady   True 
+  PodScheduled      True 
+Volumes:
+  default-token-z6sg9:
+    Type:        Secret (a volume populated by a Secret)
+    SecretName:  default-token-z6sg9
+    Optional:    false
+QoS Class:       BestEffort
+Node-Selectors:  <none>
+Tolerations:     node.kubernetes.io/not-ready:NoExecute for 300s
+                 node.kubernetes.io/unreachable:NoExecute for 300s
+Events:
+  Type    Reason     Age   From               Message
+  ----    ------     ----  ----               -------
+  Normal  Scheduled  40m   default-scheduler  Successfully assigned default/mywebserver-5cb858fd59-mjh72 to node01
+  Normal  Pulling    40m   kubelet, node01    Pulling image "nginx:latest"
+  Normal  Pulled     40m   kubelet, node01    Successfully pulled image "nginx:latest"
+  Normal  Created    40m   kubelet, node01    Created container nginx
+  Normal  Started    40m   kubelet, node01    Started container nginx
 ```
 {% endtab %}
 {% endtabs %}
