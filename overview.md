@@ -1,12 +1,43 @@
 # Overview
 
-Try the interactive exercise at: [https://www.katacoda.com/rwclui/scenarios/kubernetes](https://www.katacoda.com/rwclui/scenarios/kubernetes)
+> Try the interactive exercise at: [https://www.katacoda.com/rwclui/scenarios/kubernetes](https://www.katacoda.com/rwclui/scenarios/kubernetes)
 
-kubectl commands: [https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands](https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands)
+> kubectl commands: [https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands](https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands)
 
+Wait for Kubernetes cluster to be initialized.
+
+```text
 controlplane $ launch.sh 
-
 Waiting for Kubernetes to start... Kubernetes started
+```
+
+Print the client and server version information.
+
+```text
+controlplane $ kubectl version
+Client Version: version.Info{Major:"1", Minor:"18", GitVersion:"v1.18.0", GitCommit:"9e991415386e4cf155a24b1da15becaa390438d8", GitTreeState:"clean", BuildDate:"2020-03-25T14:58:59Z", GoVersion:"go1.13.8", Compiler:"gc", Platform:"linux/amd64"}
+Server Version: version.Info{Major:"1", Minor:"18", GitVersion:"v1.18.0", GitCommit:"9e991415386e4cf155a24b1da15becaa390438d8", GitTreeState:"clean", BuildDate:"2020-03-25T14:50:46Z", GoVersion:"go1.13.8", Compiler:"gc", Platform:"linux/amd64"}
+```
+
+View the nodes in the cluster
+
+```text
+controlplane $ kubectl get nodes
+NAME           STATUS   ROLES    AGE   VERSION
+controlplane   Ready    master   14m   v1.18.0
+node01         Ready    <none>   14m   v1.18.0
+```
+
+Use the  option `-o wide`to list more information about the node \(e.g. the IP address of the nodes in the cluster\) 
+
+```text
+$ kubectl get nodes -o wide 
+NAME           STATUS   ROLES    AGE   VERSION   INTERNAL-IP   EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION       CONTAINER-RUNTIME
+controlplane   Ready    master   22m   v1.18.0   172.17.0.54   <none>        Ubuntu 18.04.5 LTS   4.15.0-122-generic   docker://19.3.13
+node01         Ready    <none>   22m   v1.18.0   172.17.0.60   <none>        Ubuntu 18.04.5 LTS   4.15.0-122-generic   docker://19.3.13
+```
+
+ 
 
 
 
@@ -265,16 +296,7 @@ Commercial support is available at
 controlplane $ 
 ```
 
-Use the `kubectl get nodes` command  with the option `-o wide`to list more information about the node \(e.g. the IP address of the nodes in the cluster\) 
-
-```text
-$ kubectl get nodes -o wide 
-NAME           STATUS   ROLES    AGE   VERSION   INTERNAL-IP   EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION       CONTAINER-RUNTIME
-controlplane   Ready    master   22m   v1.18.0   172.17.0.54   <none>        Ubuntu 18.04.5 LTS   4.15.0-122-generic   docker://19.3.13
-node01         Ready    <none>   22m   v1.18.0   172.17.0.60   <none>        Ubuntu 18.04.5 LTS   4.15.0-122-generic   docker://19.3.13
-```
-
- Use the `kubectl get pod` command  with the option `-o wide`to list more information, including the node the pod resides on, and the pod’s cluster IP.
+Use the `kubectl get pod` command  with the option `-o wide`to list more information, including the node the pod resides on, and the pod’s cluster IP.
 
 ```text
 controlplane $ kubectl get pods -o wide 
