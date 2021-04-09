@@ -8,4 +8,5 @@
 * [Shorthand](shorthand.md)
 * [Yaml Config File](yaml-config-file.md)
 * [Ingress](ingress.md)
+* [Ingress2](ingress2.md)
 

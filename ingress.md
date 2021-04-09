@@ -350,6 +350,121 @@ controlplane $
 ```
 {% endcode %}
 
+
+
+* The rules apply to requests for the host _my.kubernetes.example_. 
+* Two rules are defined based on the path request with a single catch all definition. 
+* The requests to the path _/webapp1_ are forwarded onto the service _webapp1-svc_. 
+* The requests to _/webapp2_ are forwarded to _webapp2-svc_. If no rules apply, _webapp3-svc_ will be used.
+
+
+
+```text
+cat ingress-rules.yaml
+```
+
+{% code title="ingress-rules.yaml" %}
+```yaml
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: webapp-ingress
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: my.kubernetes.example
+    http:
+      paths:
+      - path: /webapp1
+        backend:
+          serviceName: webapp1-svc
+          servicePort: 80
+      - path: /webapp2
+        backend:
+          serviceName: webapp2-svc
+          servicePort: 80
+      - backend:
+          serviceName: webapp3-svc
+          servicePort: 80
+```
+{% endcode %}
+
+
+
+Deploy 
+
+```text
+kubectl create -f ingress-rules.yaml
+```
+
+\`\`
+
+Once deployed, the status of all the Ingress rules can be discovered via `kubectl get ing`
+
+
+
+## Default backend
+
+
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: default-http-backend
+  labels:
+    app: default-http-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: default-http-backend
+  template:
+    metadata:
+      labels:
+        app: default-http-backend
+    spec:
+      terminationGracePeriodSeconds: 60
+      containers:
+      - name: default-http-backend
+        # Any image is permissable as long as:
+        # 1. It serves a 404 page at /
+        # 2. It serves 200 on a /healthz endpoint
+        image: gcr.io/google_containers/defaultbackend:1.4
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 30
+          timeoutSeconds: 5
+        ports:
+        - containerPort: 8080
+        resources:
+          limits:
+            cpu: 10m
+            memory: 20Mi
+          requests:
+            cpu: 10m
+            memory: 20Mi
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: default-http-backend
+  labels:
+    app: default-http-backend
+spec:
+  ports:
+  - port: 80
+    targetPort: 8080
+  selector:
+    app: default-http-backend
+```
+
+
+
 ## Reference
 
 * [https://www.katacoda.com/courses/kubernetes/create-kubernetes-ingress-routes](https://www.katacoda.com/courses/kubernetes/create-kubernetes-ingress-routes)

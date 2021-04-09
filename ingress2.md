@@ -1,0 +1,83 @@
+# Ingress2
+
+
+
+```text
+git clone https://github.com/nginxinc/kubernetes-ingress/
+cd kubernetes-ingress/deployments
+git checkout v1.11.0
+kubectl apply -f common/ns-and-sa.yaml
+kubectl apply -f rbac/rbac.yaml
+kubectl apply -f common/default-server-secret.yaml
+kubectl apply -f common/nginx-config.yaml
+kubectl apply -f common/ingress-class.yaml
+
+kubectl apply -f common/crds/k8s.nginx.org_virtualservers.yaml
+kubectl apply -f common/crds/k8s.nginx.org_virtualserverroutes.yaml
+kubectl apply -f common/crds/k8s.nginx.org_transportservers.yaml
+kubectl apply -f common/crds/k8s.nginx.org_policies.yaml
+
+kubectl apply -f deployment/nginx-ingress.yaml
+
+kubectl get pods --namespace=nginx-ingress 
+ 
+kubectl create -f service/nodeport.yaml
+ 
+cd ~
+kubectl apply -f deployment.yaml
+kubectl create -f ingress-rules.yaml
+curl -H "Host: my.kubernetes.example" 172.17.0.10/webapp1
+curl -H "Host: my.kubernetes.example" 172.17.0.10/webapp2
+curl -H "Host: my.kubernetes.example" 172.17.0.10
+```
+
+10 kubectl get pods --namespace=nginx-ingress 11 kubectl get all --namespace=nginx-ingress 12 kubectl get ing 13 kubectl get ing --namespace=nginx-ingress 14 kubectl create -f service/nodeport.yaml 15\* kubectl get ing --namespace=nginx-ingres 16 kubectl get all --namespace=nginx-ingress 17 history
+
+
+
+
+
+1. Clone the Ingress controller repo:
+
+   ```text
+   git clone https://github.com/nginxinc/kubernetes-ingress/
+   ```
+
+2. Change your working directory to /deployments/helm-chart:
+
+   ```text
+   cd kubernetes-ingress/deployments/helm-chart
+   git checkout v1.11.0
+   ```
+
+### Adding the Helm Repository
+
+This step is required if you’re installing the chart via the helm repository.
+
+```text
+ helm repo add nginx-stable https://helm.nginx.com/stable
+helm repo update
+```
+
+### Installing the Chart
+
+#### Installing the CRDs
+
+By default, the Ingress Controller requires a number of custom resource definitions \(CRDs\) installed in the cluster. The Helm client will install those CRDs. If the CRDs are not installed, the Ingress Controller pods will not become `Ready`.
+
+If you do not use the custom resources that require those CRDs \(which corresponds to `controller.enableCustomResources` set to `false` and `controller.appprotect.enable` set to `false`\), the installation of the CRDs can be skipped by specifying `--skip-crds` for the helm install command.
+
+#### Installing via Helm Repository
+
+To install the chart with the release name my-release \(my-release is the name that you choose\):
+
+For NGINX:
+
+```text
+helm install my-release nginx-stable/nginx-ingress
+```
+
+## reference
+
+* [https://docs.nginx.com/nginx-ingress-controller/installation/installation-with-helm/](https://docs.nginx.com/nginx-ingress-controller/installation/installation-with-helm/)
+* 
