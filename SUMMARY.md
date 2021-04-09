@@ -7,4 +7,5 @@
 * [Deployment through manifest file](deployment-through-manifest-file.md)
 * [Shorthand](shorthand.md)
 * [Yaml Config File](yaml-config-file.md)
+* [Ingress](ingress.md)
 
