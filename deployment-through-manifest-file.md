@@ -287,7 +287,7 @@ NAME                                          DESIRED   CURRENT   READY   AGE
 replicaset.apps/nginx-deployment-78fd5888d7   2         2         2       7m57s
 ```
 
-## Connect to the webserver multiple times and verify that the request is load-balanced across multiple servers.
+Connect to the webserver multiple times and verify that the request is load-balanced across multiple servers.
 
 ```text
 controlplane $ curl localhost:30000
