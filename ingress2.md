@@ -52,6 +52,7 @@ This step is required if you’re installing the chart via the helm repository.
 ```text
  helm repo add nginx-stable https://helm.nginx.com/stable
 helm repo update
+
 ```
 
 ### Installing the Chart
