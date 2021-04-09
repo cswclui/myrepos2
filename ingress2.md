@@ -35,20 +35,15 @@ curl -H "Host: my.kubernetes.example" 172.17.0.10
 
 
 
-
-
 1. Clone the Ingress controller repo:
-
-   ```text
-   git clone https://github.com/nginxinc/kubernetes-ingress/
-   ```
-
 2. Change your working directory to /deployments/helm-chart:
 
-   ```text
-   cd kubernetes-ingress/deployments/helm-chart
-   git checkout v1.11.0
-   ```
+```text
+git clone https://github.com/nginxinc/kubernetes-ingress/
+cd kubernetes-ingress/deployments/helm-chart
+git checkout v1.11.0
+
+```
 
 ### Adding the Helm Repository
 
