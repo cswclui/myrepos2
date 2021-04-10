@@ -62,8 +62,32 @@ To install the chart with the release name my-release \(my-release is the name t
 For NGINX:
 
 ```text
+
 helm install my-release nginx-stable/nginx-ingress
 ```
+
+
+
+
+
+
+
+## overall
+
+
+
+```text
+ git clone https://github.com/nginxinc/kubernetes-ingress/
+cd kubernetes-ingress/deployments/helm-chart
+ git checkout v1.11.0
+helm repo add nginx-stable https://helm.nginx.com/stable
+ helm repo update
+helm install my-release nginx-stable/nginx-ingress
+ cd ~
+kubectl apply -f deployment.yaml
+```
+
+10 kubectl create -f ingress-rules.yaml 11 curl -H "Host: my.kubernetes.example" 172.17.0.10/webapp1 12 kubectl get svc 13 curl -H "Host: my.kubernetes.example" 172.17.0.31/webapp1
 
 ## reference
 
